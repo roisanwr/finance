@@ -14,4 +14,4 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // Dashboard (Protected)
 Route::get('/', function () {
     return view('dashboard.index');
-})->middleware('auth');
+})->name('dashboard')->middleware('supabase.auth');
