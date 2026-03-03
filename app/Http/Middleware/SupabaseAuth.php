@@ -10,11 +10,16 @@ class SupabaseAuth
 {
     /**
      * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Cek apakah ada 'supabase_token' di dalam session
+        if (!session()->has('supabase_token')) {
+            // Kalau nggak ada, arahin ke halaman login dan kasih pesan error
+            return redirect()->route('login')->withErrors(['error' => 'Kamu harus login dulu bro!']);
+        }
+
+        // Kalau ada, biarin dia lanjut buka halamannya
         return $next($request);
     }
 }

@@ -12,8 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // --- TAMBAHIN BARIS INI BRO ---
+        $middleware->alias([
+            'supabase.auth' => \App\Http\Middleware\SupabaseAuth::class,
+        ]);
+        // ------------------------------
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();
+
+
+    
+git config --global user.email "emailkamu@gmail.com"
