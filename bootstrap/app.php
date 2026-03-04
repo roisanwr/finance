@@ -12,11 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // --- TAMBAHIN BARIS INI BRO ---
+        // Alias middleware kustom
         $middleware->alias([
             'supabase.auth' => \App\Http\Middleware\SupabaseAuth::class,
         ]);
-        // ------------------------------
+
+        // Tambahkan session ke API routes agar session('user_id') terbaca
+        // di WalletController (dan semua API controller ke depannya)
+        $middleware->appendToGroup('api', [
+            \Illuminate\Session\Middleware\StartSession::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

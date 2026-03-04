@@ -1,27 +1,26 @@
 <?php
 
-use App\Http\Controllers\Api\AssetTransactionController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\WalletController;
 use Illuminate\Support\Facades\Route;
 
 /*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Semua route di bawah ini membutuhkan autentikasi via Sanctum.
-| Prefix otomatis: /api
-|
-*/
+ |--------------------------------------------------------------------------
+ | API Routes
+ |--------------------------------------------------------------------------
+ |
+ | Semua route API di bawah ini dilindungi oleh middleware `supabase.auth`.
+ | Middleware ini mengecek session Supabase, dan untuk request API (JSON),
+ | akan mengembalikan response 401 JSON alih-alih redirect ke halaman login.
+ | Prefix otomatis: /api
+ |
+ */
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('supabase.auth')->group(function () {
 
-    // User info
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
+    // ---- Manajemen Dompet (Wallets) ----
+    Route::get('/wallets', [WalletController::class , 'index']);
+    Route::post('/wallets', [WalletController::class , 'store']);
+    Route::put('/wallets/{id}', [WalletController::class , 'update']);
+    Route::delete('/wallets/{id}', [WalletController::class , 'destroy']);
 
-    // Asset Transactions
-    Route::post('/assets/transaction', [AssetTransactionController::class, 'store'])
-        ->name('assets.transaction.store');
 });

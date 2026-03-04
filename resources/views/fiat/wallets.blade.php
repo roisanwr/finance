@@ -5,10 +5,12 @@
 <div class="mb-6 flex justify-between items-end mt-2 lg:mt-0">
     <div>
         <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-1 transition-colors">Daftar Dompet</h2>
-        <p class="text-gray-500 dark:text-gray-400 text-sm transition-colors">Manajemen dompet kas, rekening bank, dan dompet digital Anda.</p>
+        <p class="text-gray-500 dark:text-gray-400 text-sm transition-colors">Manajemen dompet kas, rekening bank, dan
+            dompet digital Anda.</p>
     </div>
-    
-    <button onclick="openWalletModal()" class="text-sm bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-medium flex items-center gap-2 shadow-sm shrink-0">
+
+    <button onclick="openWalletModal()"
+        class="text-sm bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-medium flex items-center gap-2 shadow-sm shrink-0">
         <i data-lucide="plus" class="w-4 h-4"></i> Tambah Dompet
     </button>
 </div>
@@ -21,27 +23,34 @@
     <div class="bg-gray-200 dark:bg-gray-800 animate-pulse h-32 sudut-custom"></div>
 </div>
 
+@push('modals')
 <!-- Modal Form -->
-<div id="walletModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 hidden flex items-center justify-center">
-    <div class="bg-white dark:bg-gray-800 sudut-custom p-6 w-full max-w-md shadow-xl border border-gray-200 dark:border-gray-700">
+<div id="walletModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[60] hidden flex items-center justify-center">
+    <div
+        class="bg-white dark:bg-gray-800 sudut-custom p-6 w-full max-w-md shadow-xl border border-gray-200 dark:border-gray-700">
         <div class="flex justify-between items-center mb-4">
             <h3 class="font-bold text-lg text-gray-900 dark:text-white" id="modalTitle">Tambah Dompet Baru</h3>
-            <button onclick="closeWalletModal()" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+            <button onclick="closeWalletModal()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
-        
+
         <form id="walletForm" onsubmit="submitWalletForm(event)">
             <input type="hidden" id="wallet_id" name="id">
-            
+
             <div class="mb-4">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Dompet / Rekening</label>
-                <input type="text" id="wallet_name" name="name" required placeholder="Cth: BCA Pribadi, Gopay, Dompet Fisik" class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3">
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Dompet /
+                    Rekening</label>
+                <input type="text" id="wallet_name" name="name" required
+                    placeholder="Cth: BCA Pribadi, Gopay, Dompet Fisik"
+                    class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3">
             </div>
 
             <div class="mb-4">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe</label>
-                <select id="wallet_type" name="type" required class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3">
+                <select id="wallet_type" name="type" required
+                    class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3">
                     <option value="BANK">Bank</option>
                     <option value="DOMPET_DIGITAL">Dompet Digital</option>
                     <option value="TUNAI">Tunai</option>
@@ -50,18 +59,22 @@
 
             <div class="mb-5">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mata Uang</label>
-                <input type="text" id="wallet_currency" name="currency" value="IDR" class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 uppercase">
+                <input type="text" id="wallet_currency" name="currency" value="IDR"
+                    class="w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 uppercase">
             </div>
 
             <div class="flex justify-end gap-2">
-                <button type="button" onclick="closeWalletModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Batal</button>
-                <button type="submit" id="btnSubmit" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center">
+                <button type="button" onclick="closeWalletModal()"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Batal</button>
+                <button type="submit" id="btnSubmit"
+                    class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 flex items-center">
                     Simpan
                 </button>
             </div>
         </form>
     </div>
 </div>
+@endpush
 
 @endsection
 
@@ -84,8 +97,9 @@
                 renderWallets(data);
             })
             .catch(error => {
-                console.error("Error mengambil dta:", error);
-                document.getElementById('wallets-container').innerHTML = '<p class="text-red-500">Gagal mengambil data dompet.</p>';
+                console.error('Error mengambil data:', error);
+                showToast('Gagal mengambil data dompet.', 'error');
+                document.getElementById('wallets-container').innerHTML = '';
             });
     }
 
@@ -105,8 +119,8 @@
         wallets.forEach(wallet => {
             let icon = 'wallet';
             let colorClass = 'text-indigo-500 bg-indigo-100 dark:bg-indigo-900/50';
-            
-            if(wallet.type === 'BANK') {
+
+            if (wallet.type === 'BANK') {
                 icon = 'building';
                 colorClass = 'text-blue-500 bg-blue-100 dark:bg-blue-900/50';
             } else if (wallet.type === 'DOMPET_DIGITAL') {
@@ -119,7 +133,7 @@
 
             const card = document.createElement('div');
             card.className = 'bg-white dark:bg-gray-800 sudut-custom border border-gray-200 dark:border-gray-700 p-5 flex flex-col shadow-sm hover:shadow-md transition-all relative group';
-            
+
             // Simpan data di atribut elemen untuk form edit
             card.dataset.id = wallet.id;
             card.dataset.name = wallet.name;
@@ -148,7 +162,7 @@
             `;
             container.appendChild(card);
         });
-        
+
         lucide.createIcons();
     }
 
@@ -169,7 +183,7 @@
         document.getElementById('wallet_name').value = card.dataset.name;
         document.getElementById('wallet_type').value = card.dataset.type;
         document.getElementById('wallet_currency').value = card.dataset.currency;
-        
+
         document.getElementById('modalTitle').textContent = 'Edit Dompet';
         document.getElementById('walletModal').classList.remove('hidden');
     }
@@ -197,35 +211,44 @@
             headers: headers,
             body: JSON.stringify(submitData)
         })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success) {
-                closeWalletModal();
-                fetchWallets(); // Reload list
-            } else {
-                alert('Gagal menyimpan dompet.');
-            }
-        })
-        .catch(err => console.error(err))
-        .finally(() => {
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        });
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    closeWalletModal();
+                    fetchWallets();
+                    showToast(id ? 'Dompet berhasil diperbarui!' : 'Dompet berhasil ditambahkan!', 'success');
+                } else {
+                    showToast('Gagal menyimpan dompet. Coba lagi.', 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('Terjadi kesalahan. Cek koneksi.', 'error');
+            })
+            .finally(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            });
     }
 
     function deleteWallet(id) {
-        if(confirm('Apakah Anda yakin ingin menghapus dompet ini? Semua data histori akan terhapus juga!')) {
+        showConfirm('Semua histori transaksi pada dompet ini juga akan ikut terhapus permanen.').then(ok => {
+            if (!ok) return;
             fetch(`/api/wallets/${id}`, {
                 method: 'DELETE',
                 headers: headers
             })
-            .then(res => res.json())
-            .then(data => {
-                if(data.success) {
-                    fetchWallets();
-                }
-            });
-        }
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        fetchWallets();
+                        showToast('Dompet berhasil dihapus.', 'warning');
+                    } else {
+                        showToast('Gagal menghapus dompet.', 'error');
+                    }
+                })
+                .catch(() => showToast('Terjadi kesalahan saat menghapus.', 'error'));
+        });
     }
 </script>
 @endpush

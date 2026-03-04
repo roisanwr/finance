@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Wallet;
 use Illuminate\Http\Request;
 
-class WalletController extends Controller
+class WalletController
 {
     // --- VIEW / HALAMAN ---
     public function view()
