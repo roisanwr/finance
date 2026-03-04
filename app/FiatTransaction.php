@@ -10,6 +10,7 @@ class FiatTransaction extends Model
     use HasUuids;
 
     protected $table = 'fiat_transactions';
+    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
