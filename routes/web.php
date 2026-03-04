@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\DashboardController;
 
 // Route Login
 Route::get('/login', [AuthController::class , 'showLoginForm'])->name('login');
@@ -18,13 +19,10 @@ Route::post('/register', [AuthController::class , 'register'])->name('register.p
 Route::middleware('supabase.auth')->group(function () {
 
     // Dashboard
-    Route::get('/', function () {
-            return view('dashboard.index');
-        }
-        )->name('dashboard');
+    Route::get('/', [DashboardController::class , 'index'])->name('dashboard');
 
-        // Manajemen Kas - Halaman
-        Route::get('/wallets', function () {
+    // Manajemen Kas - Halaman
+    Route::get('/wallets', function () {
             return view('fiat.wallets');
         }
         )->name('wallets');
