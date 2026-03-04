@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\CategoryController;
 
 // Route Login
 Route::get('/login', [AuthController::class , 'showLoginForm'])->name('login');
@@ -27,6 +28,9 @@ Route::middleware('supabase.auth')->group(function () {
         }
         )->name('wallets');
 
+        // Kategori - Halaman
+        Route::get('/categories', [CategoryController::class , 'view'])->name('categories');
+
         // ---- API Routes ----
         // Sengaja ditaruh di web.php (bukan api.php) agar session user_id otomatis tersedia.
         // api.php di Laravel 11 bersifat stateless dan tidak bisa baca session.
@@ -37,6 +41,12 @@ Route::middleware('supabase.auth')->group(function () {
             Route::post('/wallets', [WalletController::class , 'store']);
             Route::put('/wallets/{id}', [WalletController::class , 'update']);
             Route::delete('/wallets/{id}', [WalletController::class , 'destroy']);
+
+            // Categories CRUD
+            Route::get('/categories', [CategoryController::class , 'index']);
+            Route::post('/categories', [CategoryController::class , 'store']);
+            Route::put('/categories/{id}', [CategoryController::class , 'update']);
+            Route::delete('/categories/{id}', [CategoryController::class , 'destroy']);
 
         }
         );
