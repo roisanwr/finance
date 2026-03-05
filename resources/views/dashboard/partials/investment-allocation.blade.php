@@ -1,60 +1,29 @@
 {{-- ============================================================
-DASHBOARD PARTIAL: Investment Allocation
-Menampilkan progress bar alokasi portofolio investasi
-(kolom: 1/3 lebar).
-@include('dashboard.partials.investment-allocation')
+DASHBOARD PARTIAL: Investment Allocation (HTML ONLY - no scripts)
 ============================================================ --}}
 <div
-    class="bg-white dark:bg-gray-800 sudut-custom border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden transition-colors">
-    <div class="flex justify-between items-center p-5 border-b border-gray-200 dark:border-gray-700">
-        <h2 class="text-base font-bold text-gray-900 dark:text-white transition-colors">Alokasi Investasi</h2>
+    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm flex flex-col h-full">
+    <div class="p-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+        <div>
+            <h3 class="font-bold text-gray-900 dark:text-white">Alokasi Kekayaan</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Distribusi penempatan dana Anda saat ini</p>
+        </div>
+        <button class="text-gray-400 hover:text-indigo-600 transition-colors">
+            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+        </button>
     </div>
 
-    <div class="p-5 space-y-4">
+    <div class="p-6 flex-1 flex flex-col justify-center relative">
+        <div id="allocationChart" class="w-full flex justify-center items-center h-64"></div>
 
-        {{-- Saham --}}
-        <div>
-            <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-600 dark:text-gray-400 font-medium">Saham</span>
-                <span class="text-gray-900 dark:text-gray-200 font-bold">55%</span>
+        @if(array_sum($chartSeries) == 0)
+        <div
+            class="absolute inset-0 flex flex-col items-center justify-center bg-white/90 dark:bg-gray-800/90 z-10 p-6 text-center">
+            <div class="w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-3">
+                <i data-lucide="pie-chart" class="w-6 h-6 text-gray-400"></i>
             </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div class="bg-blue-500 h-2 rounded-full" style="width: 55%"></div>
-            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Belum ada data alokasi.</p>
         </div>
-
-        {{-- Kripto --}}
-        <div>
-            <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-600 dark:text-gray-400 font-medium">Kripto</span>
-                <span class="text-gray-900 dark:text-gray-200 font-bold">25%</span>
-            </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div class="bg-amber-500 h-2 rounded-full" style="width: 25%"></div>
-            </div>
-        </div>
-
-        {{-- Reksa Dana Pasar Uang --}}
-        <div>
-            <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-600 dark:text-gray-400 font-medium">Reksa Dana Pasar Uang</span>
-                <span class="text-gray-900 dark:text-gray-200 font-bold">15%</span>
-            </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div class="bg-green-500 h-2 rounded-full" style="width: 15%"></div>
-            </div>
-        </div>
-
-        {{-- Logam Mulia --}}
-        <div>
-            <div class="flex justify-between text-sm mb-1">
-                <span class="text-gray-600 dark:text-gray-400 font-medium">Logam Mulia</span>
-                <span class="text-gray-900 dark:text-gray-200 font-bold">5%</span>
-            </div>
-            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
-                <div class="bg-yellow-400 h-2 rounded-full" style="width: 5%"></div>
-            </div>
-        </div>
-
+        @endif
     </div>
 </div>

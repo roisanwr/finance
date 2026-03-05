@@ -5,6 +5,8 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\PortfolioController;
 
 // Route Login
 Route::get('/login', [AuthController::class , 'showLoginForm'])->name('login');
@@ -33,6 +35,12 @@ Route::middleware('supabase.auth')->group(function () {
         // Arus Kas - Halaman
         Route::get('/transactions', [TransactionController::class , 'view'])->name('transactions');
 
+        // Katalog Aset - Halaman
+        Route::get('/assets', [AssetController::class , 'view'])->name('assets');
+
+        // Portofolio & Transaksi Investasi - Halaman
+        Route::get('/portfolios', [PortfolioController::class , 'view'])->name('portfolios');
+
         // ---- API Routes ----
         // Sengaja ditaruh di web.php (bukan api.php) agar session user_id otomatis tersedia.
         // api.php di Laravel 11 bersifat stateless dan tidak bisa baca session.
@@ -55,6 +63,16 @@ Route::middleware('supabase.auth')->group(function () {
             Route::post('/transactions', [TransactionController::class , 'store']);
             Route::delete('/transactions/{id}', [TransactionController::class , 'destroy']);
 
+            // Assets CRUD
+            Route::get('/assets', [AssetController::class , 'index']);
+            Route::post('/assets', [AssetController::class , 'store']);
+            Route::put('/assets/{id}/price', [AssetController::class , 'updateMarketPrice']);
+            Route::delete('/assets/{id}', [AssetController::class , 'destroy']);
+
+            // Portfolios & Equity Transactions
+            Route::get('/portfolios', [PortfolioController::class , 'index']);
+            Route::get('/portfolios/{id}/transactions', [PortfolioController::class , 'transactions']);
+            Route::post('/transactions/equity', [PortfolioController::class , 'storeTransaction']);
         }
         );
 

@@ -74,6 +74,51 @@
         </form>
     </div>
 </div>
+
+<!-- Modal Histori -->
+<div id="historyModal"
+    class="fixed inset-0 bg-gray-900 bg-opacity-50 z-[60] hidden flex items-center justify-center p-4">
+    <div
+        class="bg-white dark:bg-gray-800 sudut-custom p-6 w-full max-w-3xl shadow-xl border border-gray-200 dark:border-gray-700 flex flex-col max-h-[90vh]">
+        <div class="flex justify-between items-center mb-4 shrink-0">
+            <div>
+                <h3 class="font-bold text-lg text-gray-900 dark:text-white" id="historyModalTitle">Histori Dompet</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400" id="historyModalSubtitle">Sisa Saldo: Rp 0</p>
+            </div>
+            <button onclick="closeHistoryModal()"
+                class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <div class="overflow-y-auto flex-1 border border-gray-200 dark:border-gray-700 rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800/50 sticky top-0">
+                    <tr>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Tanggal</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Deskripsi</th>
+                        <th
+                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Tipe</th>
+                        <th
+                            class="px-4 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Nominal</th>
+                    </tr>
+                </thead>
+                <tbody id="historyTableBody"
+                    class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+                    <tr>
+                        <td colspan="4" class="px-4 py-8 text-center text-gray-500">Memuat data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @endpush
 
 @endsection
@@ -142,8 +187,9 @@
 
             card.innerHTML = `
                 <div class="absolute top-4 right-4 hidden group-hover:flex space-x-2">
-                    <button onclick="editWallet(this)" class="text-gray-400 hover:text-indigo-600 transition-colors"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
-                    <button onclick="deleteWallet('${wallet.id}')" class="text-gray-400 hover:text-red-600 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    <button onclick="openHistoryModal('${wallet.id}', '${wallet.name}', ${wallet.balance || 0})" class="text-gray-400 hover:text-indigo-600 transition-colors" title="Lihat Histori"><i data-lucide="history" class="w-4 h-4"></i></button>
+                    <button onclick="editWallet(this)" class="text-gray-400 hover:text-indigo-600 transition-colors" title="Edit"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                    <button onclick="deleteWallet('${wallet.id}')" class="text-gray-400 hover:text-red-600 transition-colors" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>
                 <div class="flex items-center mb-3 pr-8">
                     <div class="p-2.5 rounded-xl mr-3 ${colorClass}">
@@ -156,8 +202,7 @@
                 </div>
                 <div class="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-end">
                     <span class="text-xs text-gray-500 dark:text-gray-400">${wallet.currency}</span>
-                    <span class="font-bold text-gray-900 dark:text-white">...</span> 
-                    <!-- Nanti bisa di-load dari view wallet_balances, tapi kita taruh placeholder dulu karena kita belum bikin controller get balance -->
+                    <span class="font-bold ${(wallet.balance || 0) >= 0 ? 'text-gray-900 dark:text-white' : 'text-red-500'}">${formatRp(wallet.balance || 0)}</span> 
                 </div>
             `;
             container.appendChild(card);
@@ -175,6 +220,67 @@
 
     function closeWalletModal() {
         document.getElementById('walletModal').classList.add('hidden');
+    }
+
+    function formatRp(angka) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(angka);
+    }
+
+    function openHistoryModal(walletId, walletName, balance) {
+        document.getElementById('historyModalTitle').textContent = 'Riwayat Kas: ' + walletName;
+        document.getElementById('historyModalSubtitle').textContent = 'Sisa Saldo: ' + formatRp(balance || 0);
+        document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500"><i data-lucide="loader-2" class="w-6 h-6 animate-spin mx-auto mb-2"></i> Memuat riwayat...</td></tr>';
+        lucide.createIcons();
+        document.getElementById('historyModal').classList.remove('hidden');
+
+        fetch('/api/transactions?wallet_id=' + walletId, { headers })
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('historyTableBody');
+                tbody.innerHTML = '';
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">Belum ada histori transaksi untuk dompet ini.</td></tr>';
+                    return;
+                }
+
+                data.forEach(tx => {
+                    let typeColor = 'text-gray-500';
+                    let amountPrefix = '';
+                    if (tx.transaction_type === 'PEMASUKAN') {
+                        typeColor = 'text-green-600 dark:text-green-500';
+                        amountPrefix = '+ ';
+                    } else if (tx.transaction_type === 'PENGELUARAN') {
+                        typeColor = 'text-red-600 dark:text-red-500';
+                        amountPrefix = '- ';
+                    } else {
+                        typeColor = 'text-blue-600 dark:text-blue-500';
+                    }
+
+                    const dateObj = new Date(tx.transaction_date);
+                    const dateStr = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+                    const desc = tx.description || (tx.category ? tx.category.name : 'Aktivitas Transfer');
+
+                    tbody.innerHTML += '<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">' +
+                        '<td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">' + dateStr + '</td>' +
+                        '<td class="px-4 py-3 text-sm text-gray-900 dark:text-white border-l border-gray-100 dark:border-gray-800 pl-4">' + desc + '</td>' +
+                        '<td class="px-4 py-3 whitespace-nowrap text-sm font-medium ' + typeColor + '">' + tx.transaction_type + '</td>' +
+                        '<td class="px-4 py-3 whitespace-nowrap text-sm text-right font-medium ' + typeColor + '">' + amountPrefix + formatRp(tx.amount) + '</td>' +
+                        '</tr>';
+                });
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById('historyTableBody').innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-red-500">Gagal memuat histori.</td></tr>';
+            });
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.add('hidden');
     }
 
     function editWallet(btn) {

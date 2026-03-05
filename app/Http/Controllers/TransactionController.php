@@ -19,14 +19,19 @@ class TransactionController
 
     // --- API ENDPOINTS ---
 
-    public function index()
+    public function index(Request $request)
     {
         $userId = session('user_id');
 
-        // Mengambil transaksi dengan urutan tanggal terbaru turun, memuat relasi wallet dan category
-        $transactions = FiatTransaction::with(['wallet', 'category'])
-            ->where('user_id', $userId)
-            ->orderBy('transaction_date', 'desc')
+        $query = FiatTransaction::with(['wallet', 'category'])
+            ->where('user_id', $userId);
+
+        // Filter opsional berdasarkan dompet
+        if ($request->has('wallet_id') && $request->wallet_id) {
+            $query->where('wallet_id', $request->wallet_id);
+        }
+
+        $transactions = $query->orderBy('transaction_date', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 

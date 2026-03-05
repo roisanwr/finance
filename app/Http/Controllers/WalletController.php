@@ -16,9 +16,23 @@ class WalletController
     // --- API LIST DATA ---
     public function index()
     {
-        $userId = session('user_id'); // Ambil dari session yang diset AuthController
+        $userId = session('user_id');
 
-        $wallets = Wallet::where('user_id', $userId)->get();
+        $wallets = Wallet::where('user_id', $userId)
+            ->withSum(['fiatTransactions as total_in' => function ($query) {
+            $query->where('transaction_type', 'PEMASUKAN');
+        }], 'amount')
+            ->withSum(['fiatTransactions as total_out' => function ($query) {
+            $query->where('transaction_type', 'PENGELUARAN');
+        }], 'amount')
+            ->get();
+
+        // Kalkulasi field tambahan "balance" (saldo akhir)
+        $wallets->each(function ($wallet) {
+            $in = $wallet->total_in ?? 0;
+            $out = $wallet->total_out ?? 0;
+            $wallet->balance = $in - $out;
+        });
 
         return response()->json($wallets);
     }
@@ -70,7 +84,6 @@ class WalletController
     {
         $userId = session('user_id');
         $wallet = Wallet::where('id', $id)->where('user_id', $userId)->firstOrFail();
-
         $wallet->delete();
 
         return response()->json(['success' => true, 'message' => 'Wallet deleted.']);

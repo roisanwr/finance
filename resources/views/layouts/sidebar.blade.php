@@ -40,20 +40,13 @@
 
             <!-- Master Aset Section -->
             <li class="pt-5 pb-2 px-3">
-                <span class="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-wider">MASTER ASET</span>
+                <span class="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-wider">MANAJEMEN ASET</span>
             </li>
             <li>
-                <a href="#"
-                    class="flex items-center px-3 py-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors font-medium">
-                    <i data-lucide="database" class="w-5 h-5 mr-3"></i>
-                    Katalog Aset
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                    class="flex items-center px-3 py-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors font-medium">
-                    <i data-lucide="line-chart" class="w-5 h-5 mr-3"></i>
-                    Harga Pasar
+                <a href="{{ route('assets') }}"
+                    class="flex items-center px-3 py-2.5 {{ request()->routeIs('assets') ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-500 font-semibold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium' }} rounded-lg transition-colors">
+                    <i data-lucide="trending-up" class="w-5 h-5 mr-3"></i>
+                    Katalog Master Aset
                 </a>
             </li>
 
@@ -63,17 +56,10 @@
                     INVESTASI</span>
             </li>
             <li>
-                <a href="#"
-                    class="flex items-center px-3 py-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors font-medium">
+                <a href="{{ route('portfolios') }}"
+                    class="flex items-center px-3 py-2.5 {{ request()->routeIs('portfolios') ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-500 font-semibold' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white font-medium' }} rounded-lg transition-colors">
                     <i data-lucide="pie-chart" class="w-5 h-5 mr-3"></i>
                     Portofolio Saya
-                </a>
-            </li>
-            <li>
-                <a href="#"
-                    class="flex items-center px-3 py-2.5 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white rounded-lg transition-colors font-medium">
-                    <i data-lucide="trending-up" class="w-5 h-5 mr-3"></i>
-                    Transaksi Aset
                 </a>
             </li>
         </ul>
