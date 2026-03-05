@@ -21,17 +21,22 @@
 <script>
     // ApexCharts: Alokasi Kekayaan
     (function () {
-        var series = @json($chartSeries);
-        var labels = @json($chartLabels);
-        var total = series.reduce(function (a, b) { return a + b; }, 0);
+        var rawSeries = @json($chartSeries);
+        var rawLabels = @json($chartLabels);
+        var total = rawSeries.reduce(function (a, b) { return a + b; }, 0);
+        
+        var series = total > 0 ? rawSeries : [1];
+        var labels = total > 0 ? rawLabels : ['Belum Ada Dana'];
 
-        if (total > 0 && document.querySelector('#allocationChart')) {
+        if (document.querySelector('#allocationChart')) {
             var isDark = document.documentElement.classList.contains('dark');
+            var colors = total > 0 ? ['#4F46E5', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280'] : (isDark ? ['#374151'] : ['#E5E7EB']);
+            
             var chart = new ApexCharts(document.querySelector('#allocationChart'), {
                 series: series,
                 labels: labels,
                 chart: { type: 'donut', height: 280, fontFamily: 'inherit', background: 'transparent' },
-                colors: ['#4F46E5', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', '#6B7280'],
+                colors: colors,
                 plotOptions: {
                     pie: {
                         donut: {
@@ -43,6 +48,7 @@
                                     show: true, fontSize: '18px', fontWeight: 700,
                                     color: isDark ? '#F9FAFB' : '#111827',
                                     formatter: function (val) {
+                                        if (total === 0) return 'Rp 0';
                                         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val);
                                     }
                                 },
@@ -50,8 +56,8 @@
                                     show: true, showAlways: false, label: 'Total',
                                     color: isDark ? '#9CA3AF' : '#6B7280',
                                     formatter: function (w) {
-                                        var sum = w.globals.seriesTotals.reduce(function (a, b) { return a + b; }, 0);
-                                        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(sum);
+                                        if (total === 0) return 'Rp 0';
+                                        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total);
                                     }
                                 }
                             }
@@ -63,7 +69,12 @@
                 stroke: { show: true, colors: isDark ? ['#1F2937'] : ['#ffffff'], width: 2 },
                 tooltip: {
                     theme: isDark ? 'dark' : 'light',
-                    y: { formatter: function (val) { return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val); } }
+                    y: { 
+                        formatter: function (val) { 
+                            if (total === 0) return 'Rp 0';
+                            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val); 
+                        } 
+                    }
                 }
             });
             chart.render();
@@ -73,7 +84,7 @@
                 mutations.forEach(function (m) {
                     if (m.attributeName === 'class') {
                         var dark = document.documentElement.classList.contains('dark');
-                        chart.updateOptions({
+                        chart.update{
                             stroke: { colors: dark ? ['#1F2937'] : ['#ffffff'] },
                             tooltip: { theme: dark ? 'dark' : 'light' },
                             legend: { labels: { colors: dark ? '#D1D5DB' : '#374151' } }

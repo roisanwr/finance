@@ -332,6 +332,10 @@
 
     {{-- Scripts: fungsi JS global layout --}}
     @include('layouts.partials.scripts')
+
+    {{-- Engine Grafik: ApexCharts --}}
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     @stack('scripts')
 </body>
 
